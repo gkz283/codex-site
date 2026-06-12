@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenAI Codex 安装配置完整指南</title>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --card: #13131f;
+  --card2: #1a1a2e;
+  --border: #252540;
+  --text: #d0d0e0;
+  --text2: #8888aa;
+  --gold: #f0b90b;
+  --gold2: #d4a00a;
+  --blue: #4da6ff;
+  --blue2: #3388dd;
+  --green: #3cb878;
+  --green2: #2a9d62;
+  --red: #f04770;
+  --purple: #a277ff;
+  --radius: 10px;
+  --transition: 0.2s ease;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+/* ═══════ NAV ═══════ */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,10,15,0.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border); padding: 0 20px;
+}
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; gap: 20px;
+  height: 52px; overflow-x: auto;
+}
+.nav-inner a {
+  font-size: 0.78rem; color: var(--text2); text-decoration: none;
+  white-space: nowrap; transition: var(--transition);
+}
+.nav-inner a:hover { color: var(--gold); }
+.nav-logo { font-weight: 700; font-size: 0.95rem; color: var(--gold) !important; margin-right: auto; }
+
+/* ═══════ SECTIONS ═══════ */
+section { padding: 48px 20px; }
+.section-inner { max-width: 960px; margin: 0 auto; }
+.section-title {
+  font-size: 1.6rem; font-weight: 700; margin-bottom: 6px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-sub { color: var(--text2); margin-bottom: 28px; font-size: 0.9rem; }
+
+/* ═══════ HERO ═══════ */
+.hero {
+  text-align: center; padding: 60px 20px 50px;
+  background: radial-gradient(ellipse at 50% 0%, #1a1a3a 0%, var(--bg) 70%);
+}
+.hero h1 {
+  font-size: 2.4rem; font-weight: 800; line-height: 1.3;
+  background: linear-gradient(135deg, var(--gold), #f7d94e, var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero .badge-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 16px 0; }
+.hero .badge {
+  padding: 5px 14px; border-radius: 20px; font-size: 0.75rem;
+  border: 1px solid var(--border); background: var(--card);
+}
+.hero .badge.hot { border-color: #f04770; color: #f04770; }
+.hero .btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
+.btn {
+  padding: 12px 28px; border-radius: var(--radius); font-weight: 600;
+  font-size: 0.9rem; cursor: pointer; text-decoration: none;
+  font-family: inherit; border: none; transition: var(--transition);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold2)); color: #000; }
+.btn-gold:hover { filter: brightness(1.15); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(240,185,11,0.3); }
+.btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+.btn-blue { background: var(--blue); color: #fff; }
+.btn-blue:hover { filter: brightness(1.15); }
+
+/* ═══════ PRICING CARDS ═══════ */
+.pricing-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 20px;
+}
+.pricing-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 28px 24px;
+  position: relative; transition: var(--transition);
+}
+.pricing-card:hover { border-color: #444; }
+.pricing-card.premium {
+  border-color: var(--gold); box-shadow: 0 0 30px rgba(240,185,11,0.08);
+}
+.pricing-card .tag {
+  position: absolute; top: -12px; right: 20px;
+  background: var(--red); color: #fff; padding: 4px 14px;
+  border-radius: 14px; font-size: 0.72rem; font-weight: 700;
+}
+.pricing-card h3 { font-size: 1.1rem; margin-bottom: 4px; }
+.pricing-card .price { font-size: 2rem; font-weight: 800; margin: 10px 0; }
+.pricing-card .price span { font-size: 0.85rem; color: var(--text2); font-weight: 400; }
+.pricing-card ul { list-style: none; margin: 16px 0; }
+.pricing-card ul li { padding: 6px 0; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+.pricing-card ul li .check { color: var(--green); font-weight: 700; }
+.pricing-card ul li .cross { color: var(--text2); }
+.token-highlight {
+  background: linear-gradient(135deg, #1a1a06, #2a2a08);
+  border: 1px solid #3a3a10; border-radius: 8px;
+  padding: 14px; margin-top: 12px; font-size: 0.82rem;
+  text-align: center;
+}
+.token-highlight strong { color: var(--gold); font-size: 1.1rem; }
+
+/* ═══════ CARDS ═══════ */
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 22px; margin-bottom: 16px;
+}
+.card h3 { font-size: 1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.card p, .card li { font-size: 0.85rem; color: var(--text2); }
+
+/* ═══════ STEPS ═══════ */
+.step { display: flex; gap: 16px; margin-bottom: 24px; }
+.step-num {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  background: var(--card); border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.9rem; color: var(--gold);
+}
+.step-body { flex: 1; }
+.step-body h4 { font-size: 0.95rem; margin-bottom: 4px; }
+.step-body p { font-size: 0.82rem; color: var(--text2); }
+.step-body code {
+  background: #1a1a30; padding: 2px 8px; border-radius: 4px;
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.8rem; color: var(--blue);
+}
+.step-body pre {
+  background: #0a0a18; border: 1px solid var(--border);
+  border-radius: 6px; padding: 12px 16px; overflow-x: auto;
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.78rem; margin: 8px 0; color: #c0c0d0;
+}
+
+/* ═══════ PLUGIN GRID ═══════ */
+.plugin-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+.plugin-card {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px;
+  transition: var(--transition);
+}
+.plugin-card:hover { border-color: #444; }
+.plugin-card h4 { font-size: 0.88rem; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.plugin-card p { font-size: 0.78rem; color: var(--text2); }
+.plugin-card .tag-row { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.plugin-tag {
+  font-size: 0.65rem; padding: 2px 8px; border-radius: 10px;
+  background: #1a2838; color: var(--blue); border: 1px solid #283848;
+}
+
+/* ═══════ CONTACT ═══════ */
+.contact-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px; text-align: center;
+}
+.contact-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 22px;
+}
+.contact-card h4 { margin-bottom: 10px; }
+.contact-card .qr-box {
+  width: 160px; height: 160px; margin: 0 auto 10px;
+  border: 4px solid #fff; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: #fff;
+}
+.contact-card .qr-box img { width: 100%; height: 100%; }
+.contact-card .contact-info {
+  font-size: 0.82rem; color: var(--text2);
+  word-break: break-all;
+}
+
+/* ═══════ TABLE ═══════ */
+.comparison-table {
+  width: 100%; border-collapse: collapse; font-size: 0.82rem;
+}
+.comparison-table th, .comparison-table td {
+  padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border);
+}
+.comparison-table th { color: var(--text2); font-weight: 500; font-size: 0.72rem; }
+.comparison-table th:first-child { width: 40%; }
+.comparison-table .yes { color: var(--green); font-weight: 700; }
+.comparison-table .no { color: var(--text2); }
+
+/* ═══════ WARNING BOX ═══════ */
+.note-box {
+  border-radius: var(--radius); padding: 16px 20px; margin: 16px 0;
+  font-size: 0.82rem; display: flex; align-items: flex-start; gap: 10px;
+}
+.note-box.warn { background: #1a1008; border: 1px solid #3a2810; color: #d4a00a; }
+.note-box.info { background: #08101a; border: 1px solid #102840; color: #4da6ff; }
+.note-box.tip { background: #081a10; border: 1px solid #103820; color: #3cb878; }
+.note-box .icon { font-size: 1.2rem; flex-shrink: 0; }
+
+/* ═══════ FOOTER ═══════ */
+footer {
+  text-align: center; padding: 30px 20px;
+  border-top: 1px solid var(--border); color: var(--text2);
+  font-size: 0.75rem;
+}
+
+/* ═══════ RESPONSIVE ═══════ */
+@media (max-width: 640px) {
+  .hero h1 { font-size: 1.6rem; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .section-title { font-size: 1.2rem; }
+  .step { gap: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav>
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo">⚡ Codex Guide</a>
+    <a href="#compare">套餐对比</a>
+    <a href="#install">安装教程</a>
+    <a href="#usage">使用指南</a>
+    <a href="#config">配置建议</a>
+    <a href="#plugins">插件推荐</a>
+    <a href="#expert">大神配置</a>
+    <a href="#api">API 供应商</a>
+    <a href="#contact">联系我</a>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero" id="hero">
+  <h1>OpenAI Codex<br>安装配置完整指南</h1>
+  <div class="badge-row">
+    <span class="badge hot">🔥 最新 2026 版</span>
+    <span class="badge">Windows / macOS / Linux</span>
+    <span class="badge">零基础可操作</span>
+    <span class="badge">持续更新</span>
+  </div>
+  <p style="color:var(--text2);max-width:560px;margin:0 auto;font-size:0.9rem">
+    从安装到精通，一站式搞定。提供远程代装 + 图文教程双模式，
+    附赠插件推荐、大神配置、API 密钥渠道等独家资源。
+  </p>
+  <div class="btn-row">
+    <a href="#compare" class="btn btn-gold">📦 查看套餐</a>
+    <a href="#install" class="btn btn-outline">📖 直接看教程</a>
+  </div>
+</section>
+
+<!-- ═══════════ 套餐对比 ═══════════ -->
+<section id="compare">
+  <div class="section-inner">
+    <div class="section-title">📦 套餐对比</div>
+    <div class="section-sub">根据你的需求选择合适的服务方式</div>
+
+    <div class="pricing-grid">
+      <!-- 非远程 -->
+      <div class="pricing-card">
+        <h3>📖 标准版</h3>
+        <div class="price">¥3.99<span> / 仅教程</span></div>
+        <p style="color:var(--text2);font-size:0.82rem">自学能力强，看教程就能搞定</p>
+        <ul>
+          <li><span class="check">✓</span> Codex 完整安装图文教程</li>
+          <li><span class="check">✓</span> 基础配置最佳实践</li>
+          <li><span class="check">✓</span> 常用插件 & Skills 推荐清单</li>
+          <li><span class="check">✓</span> 个性化「大神配置」分享</li>
+          <li><span class="check">✓</span> API 密钥供应商推荐</li>
+          <li><span class="check">✓</span> 后续教程更新免费获取</li>
+          <li><span class="cross">✗</span> 远程协助安装</li>
+          <li><span class="cross">✗</span> 不包含 Token 额度</li>
+        </ul>
+        <a href="#install" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:8px">查看教程 →</a>
+      </div>
+
+      <!-- 远程 -->
+      <div class="pricing-card premium">
+        <span class="tag">🔥 推荐</span>
+        <h3>🛠️ 尊享版</h3>
+        <div class="price">¥18.99<span> / 远程代装</span></div>
+        <p style="color:var(--text2);font-size:0.82rem">不想折腾，我远程帮你全搞定</p>
+        <ul>
+          <li><span class="check">✓</span> Codex 完整安装图文教程</li>
+          <li><span class="check">✓</span> 基础配置最佳实践</li>
+          <li><span class="check">✓</span> 常用插件 & Skills 推荐清单</li>
+          <li><span class="check">✓</span> 个性化「大神配置」分享</li>
+          <li><span class="check">✓</span> API 密钥供应商推荐</li>
+          <li><span class="check">✓</span> 后续教程更新免费获取</li>
+          <li><span class="check">✓</span> <strong>远程协助安装（ToDesk）</strong></li>
+          <li><span class="check">✓</span> <strong>附赠 1 天 Token（≈$100，3800万）</strong></li>
+          <li><span class="check">✓</span> <strong>30 天不定时解答</strong>（安装+使用问题）</li>
+          <li><span class="check">✓</span> <strong>Token 高效使用指南</strong>（最大化利用额度）</li>
+          <li><span class="check">✓</span> <strong>独家更新权益</strong>（新插件/MCP/技巧优先推送）</li>
+        </ul>
+        <div class="token-highlight">
+          🎁 赠送 <strong>一天 GPT-5.5 满血版 API Key</strong>，$100 额度<br>
+          <span style="font-size:0.72rem;color:var(--text2)">约 3800 万 Token，价值 ¥700+，重度使用都够</span>
+        </div>
+        <div style="background:#0a1a10;border:1px solid #103820;border-radius:8px;padding:12px;margin-top:10px;font-size:0.78rem;color:var(--green)">
+          🛡️ <strong>30 天售后承诺：</strong>安装遇到问题？使用卡住了？配置不生效？<br>
+          30 天内随时联系我，不定时免费解答。不是一锤子买卖。
+        </div>
+        <a href="#contact" class="btn btn-gold" style="width:100%;justify-content:center;margin-top:12px">加我远程安装 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 前置准备 ═══════════ -->
+<section id="install" style="background:var(--card2)">
+  <div class="section-inner">
+    <div class="section-title">🖥️ 安装教程</div>
+    <div class="section-sub">图文详解 · 预计 15 分钟完成</div>
+
+    <div class="note-box warn">
+      <span class="icon">⚠️</span>
+      <div>
+        <strong>购买远程安装的用户请注意：</strong><br>
+        请先自行安装 <strong>ToDesk</strong>（todesk.com 下载免费版），
+        安装后打开 ToDesk，将 <strong>设备代码和临时密码</strong> 发给我，
+        然后加我微信/QQ 预约安装时间。
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📋 前置条件</h3>
+      <ul style="list-style:disc;padding-left:20px;color:var(--text2);font-size:0.85rem">
+        <li>操作系统：Windows 10+ / macOS 12+</li>
+        <li>一个 ChatGPT 账号（Plus / Pro / Team 订阅均可，或 OpenAI API Key）。<strong>未订阅 ChatGPT 套餐或未购买 API Key（二者选其一即可）的请自行到各大网站搜寻教程并购买</strong>。尊享版用户额外赠送 <strong>一天 API Key GPT-5.5 满血版，$100 额度</strong>（约 3800 万 Token，价值 ¥700+，相当于 ChatGPT Plus 半年用量）</li>
+        <li>稳定的网络连接（若无法打开 Codex 网站，建议使用魔法，推荐 <a href="https://xiaozhu111.com" style="color:var(--blue)" target="_blank">xiaozhu111.com</a>）</li>
+        <li>远程用户额外需要：安装好 <a href="https://www.todesk.com" style="color:var(--blue)" target="_blank">ToDesk</a>（todesk.com 下载免费版即可）</li>
+      </ul>
+    </div>
+
+    <div class="note-box warn">
+      <span class="icon">⚠️</span>
+      <div>
+        <strong>如遇官网打不开：</strong><br>
+        OpenAI 官网可能无法直连。请先开启魔法再操作。
+        推荐 <a href="https://xiaozhu111.com" style="color:var(--blue)" target="_blank">xiaozhu111.com</a>。
+      </div>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>打开官网，下载桌面版</h4>
+        <p>用浏览器打开：<a href="https://openai.com/zh-Hans-CN/codex/" style="color:var(--blue)" target="_blank">openai.com/zh-Hans-CN/codex</a></p>
+        <p style="color:var(--text2);font-size:0.8rem">进入页面后会自动识别你的操作系统，点击页面上的 <strong>「下载」</strong> 或 <strong>「获取 Codex」</strong> 按钮。</p>
+
+        <table class="comparison-table" style="font-size:0.78rem;margin-top:8px">
+          <tr><th style="width:20%">你的系统</th><th>下载的文件</th><th>操作</th></tr>
+          <tr><td>Windows</td><td><code>Codex-Setup.exe</code></td><td>双击运行，一路「下一步」→「安装」→「完成」</td></tr>
+          <tr><td>macOS</td><td><code>Codex.dmg</code></td><td>双击打开 → 把 Codex 图标拖到 Applications 文件夹</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>登录认证</h4>
+        <p>安装完成后打开 Codex 桌面应用，会弹出登录窗口：</p>
+
+        <p><strong>🔐 方式一：ChatGPT 账号登录（推荐）</strong></p>
+        <p style="color:var(--text2);font-size:0.8rem">点击「使用 ChatGPT 登录」，浏览器会自动弹出授权页面，确认即可。需要 ChatGPT Plus / Pro / Team 订阅。</p>
+
+        <p style="margin-top:8px"><strong>🔑 方式二：API Key 登录</strong></p>
+        <p style="color:var(--text2);font-size:0.8rem">在 <a href="https://ai.gs88.shop/login" style="color:var(--blue)" target="_blank">ai.gs88.shop/login</a>（作者推荐购买网址）创建密钥，粘贴到 Codex 登录窗口的 API Key 输入框。其他购买渠道请自行寻找。API 方式按使用量计费。</p>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>选择工作目录，开始使用</h4>
+        <p>登录成功后，Codex 会让你选择一个本地文件夹作为工作目录。选好之后就可以在对话框中用自然语言下指令了：</p>
+        <pre>帮我创建一个 React 待办事项应用</pre>
+        <p style="color:var(--text2);font-size:0.8rem">Codex 会自动创建文件、写代码、运行项目——全程你只需要看着。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ Codex 使用指南 ═══════════ -->
+<section id="usage">
+  <div class="section-inner">
+    <div class="section-title">📘 Codex 从零到精通</div>
+    <div class="section-sub">从第一次对话到驾驭多 Agent 编排，完整使用指南</div>
+
+    <!-- ═══════════ 第一章：初识 Codex ═══════════ -->
+    <div class="card">
+      <h3>🧭 第一章 · 初识 Codex</h3>
+      <p style="margin-bottom:12px">OpenAI Codex 是一个<strong>桌面应用程序</strong>，安装后像一个普通的软件一样使用。它本质是一个接入了 GPT 模型的编程助手，能直接操作你的电脑：</p>
+      <table class="comparison-table">
+        <tr><th></th><th>ChatGPT 网页版</th><th>Codex 桌面版</th></tr>
+        <tr><td>运行方式</td><td>浏览器打开网页</td><td>双击桌面图标打开</td></tr>
+        <tr><td>能创建文件吗</td><td>不能，只能给你代码让你自己复制粘贴</td><td>✅ 直接在你的文件夹里创建、修改、删除文件</td></tr>
+        <tr><td>能运行代码吗</td><td>不能</td><td>✅ 自动运行你的项目，打开浏览器预览效果</td></tr>
+        <tr><td>能安装依赖吗</td><td>不能</td><td>✅ 自动执行 npm install、pip install 等</td></tr>
+        <tr><td>能访问你的项目</td><td>不能，每次对话都是独立的</td><td>✅ 读取整个项目文件夹，理解项目结构</td></tr>
+        <tr><td>工作模式</td><td>一问一答，你复制粘贴</td><td>你说需求 → 它自己做 → 做好给你看</td></tr>
+      </table>
+      <div class="note-box tip" style="margin-top:12px">
+        <span class="icon">💡</span>
+        <div><strong>打个比方：</strong>ChatGPT 网页版像一个给你建议的顾问——它告诉你该怎么做，但你自己动手。Codex 像一个坐在你旁边的程序员——你跟它说需求，它直接帮你把活干了。</div>
+      </div>
+    </div>
+
+    <!-- ═══════════ 第二章：界面认知 ═══════════ -->
+    <div class="card">
+      <h3>🖥️ 第二章 · 界面认知</h3>
+      <p style="margin-bottom:12px">打开 Codex 桌面应用后，你会看到一个简洁的窗口。花 3 分钟搞清楚每个区域是干什么的：</p>
+
+      <table class="comparison-table">
+        <tr><th style="width:25%">区域</th><th>在哪里</th><th>干什么用</th></tr>
+        <tr><td>对话区</td><td>中间大面积区域</td><td>你和 AI 的对话显示在这里。AI 干了什么、创建了什么文件，都会一行行显示</td></tr>
+        <tr><td>输入框</td><td>底部</td><td>在这里用自然语言输入你的需求，回车发送</td></tr>
+        <tr><td>文件列表</td><td>左侧边栏</td><td>显示当前工作目录的所有文件和文件夹，AI 创建/修改了文件这里会实时更新</td></tr>
+        <tr><td>设置按钮 ⚙️</td><td>左下角</td><td>点开可以改模型、调权限模式、查看使用量</td></tr>
+        <tr><td>权限弹窗</td><td>操作时弹出</td><td>AI 要做敏感操作（如删文件、执行命令）时会弹窗让你确认，点「允许」或「拒绝」</td></tr>
+        <tr><td>工作目录</td><td>顶部显示</td><td>当前 Codex 在哪个文件夹里干活，可以随时切换</td></tr>
+      </table>
+
+      <div class="note-box info" style="margin-top:12px">
+        <span class="icon">📌</span>
+        <div><strong>重要习惯：</strong>每次使用 Codex 前，先确认顶部的工作目录是不是你的项目文件夹。不在正确的目录里，AI 就找不到你的文件。</div>
+      </div>
+    </div>
+
+    <!-- ═══════════ 第三章：第一个项目 ═══════════ -->
+    <div class="card">
+      <h3>🚀 第三章 · 第一个项目</h3>
+      <p style="margin-bottom:12px">跟着做一遍，你就知道 Codex 的完整工作流程了：</p>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>新建一个空文件夹</h4>
+          <p>在桌面或任意位置新建一个文件夹，比如叫 <code>my-first-app</code>。打开 Codex，选择这个文件夹作为工作目录。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>用自然语言描述你的需求</h4>
+          <p>在底部输入框里打字。描述越具体，结果越接近你想要的样子：</p>
+          <pre>帮我用 HTML + CSS + JavaScript 做一个个人记账网页。
+功能：添加收入/支出、显示余额、按日期筛选记录。
+界面风格：简洁白底，绿色收入红色支出，移动端也能看。
+所有代码写在一个 index.html 文件里，做好之后用浏览器打开给我看。</pre>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>观察 AI 干活的过程</h4>
+          <p>发送需求后，你会看到 Codex 一步步地：分析需求 → 规划文件结构 → 创建 index.html → 写入代码 → 打开浏览器预览。过程中如果弹出权限确认，点「允许」。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>不满意？继续提修改</h4>
+          <pre>把收入那一栏改成绿色背景，支出改成红色背景。
+在顶部加一个本月总支出和总收入的统计卡片。
+字体调大一点，按钮改圆角。</pre>
+          <p>就像跟设计师沟通一样，持续迭代到你满意为止。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h4>代码写错了也别怕</h4>
+          <p>如果页面打不开或者报错，直接把错误信息复制给 Codex：</p>
+          <pre>打开页面后报错了：Uncaught TypeError: xxx is not a function，帮我修一下</pre>
+          <p>AI 会自己读错误信息、找到原因、修复代码——你不需要自己 debug。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ 第四章：核心概念 ═══════════ -->
+    <div class="card">
+      <h3>📖 第四章 · 必须理解的 5 个核心概念</h3>
+      <p style="margin-bottom:12px">下面的概念决定了你用得顺不顺手，花 5 分钟读懂：</p>
+
+      <h4 style="font-size:0.9rem;margin:12px 0 6px">1️⃣ 工作目录（Working Directory）</h4>
+      <p style="color:var(--text2);font-size:0.82rem">Codex 只能看到和操作当前工作目录里的文件。换项目时记得在顶部切换目录——AI 看不到目录以外的东西。</p>
+
+      <h4 style="font-size:0.9rem;margin:12px 0 6px">2️⃣ 上下文（Context）</h4>
+      <p style="color:var(--text2);font-size:0.82rem">Codex 会记住当前对话里的所有内容——你说过的话、它创建的文件、报过的错误。对话太长后可能会"忘掉"最早的内容，如果发现 AI 开始犯糊涂，用 <code>/clear</code> 清空上下文重新开始。</p>
+
+      <h4 style="font-size:0.9rem;margin:12px 0 6px">3️⃣ 权限模式（Permissions）</h4>
+      <p style="color:var(--text2);font-size:0.82rem">三种模式，在设置里切换：<strong>Auto</strong>（推荐）项目目录内自动执行，目录外需确认；<strong>Read-only</strong> 只看不写，适合阅读陌生代码；<strong>Full Access</strong> 完全自主，适合你完全信任 AI 的场景。</p>
+
+      <h4 style="font-size:0.9rem;margin:12px 0 6px">4️⃣ 模型选择（Model）</h4>
+      <p style="color:var(--text2);font-size:0.82rem">在设置里可以切换模型。GPT-5 最强但需要 Plus 订阅，GPT-4o 也够用。如果你用的是 API Key，选贵的模型效果好但烧钱快。</p>
+
+      <h4 style="font-size:0.9rem;margin:12px 0 6px">5️⃣ Token（用量）</h4>
+      <p style="color:var(--text2);font-size:0.82rem">Token = AI 处理文本的计量单位。大约 1 个中文字 = 2 个 Token，1000 个英文单词 = 1500 个 Token。每次对话消耗 Token，ChatGPT Plus 订阅用户有额度上限，API Key 用户按量扣费。</p>
+    </div>
+
+    <!-- ═══════════ 第五章：日常使用模式 ═══════════ -->
+    <div class="card">
+      <h3>🔄 第五章 · 6 种日常使用模式</h3>
+      <p style="margin-bottom:12px">以下是 Codex 最高频的使用场景，每种都有对应的最佳提问方式：</p>
+
+      <table class="comparison-table">
+        <tr><th style="width:22%">场景</th><th>你这样说（照抄改需求即可）</th></tr>
+        <tr><td><strong>从零创建项目</strong></td><td>"帮我创建一个 [React/Vue/HTML] 项目，功能是 [xxx]。要求：[具体描述界面和功能]"</td></tr>
+        <tr><td><strong>修改现有功能</strong></td><td>"把 [xx页面/xx功能] 改成 [新的行为]，原有的 [xxx] 功能保持不变"</td></tr>
+        <tr><td><strong>修 Bug</strong></td><td>"运行之后报了这个错：[粘贴错误信息]。帮我定位原因并修复"</td></tr>
+        <tr><td><strong>阅读陌生代码</strong></td><td>"解释一下这个项目的整体架构，[xxx文件/目录] 是干什么用的"</td></tr>
+        <tr><td><strong>添加新功能</strong></td><td>"在现有的 [xxx页面] 上增加一个 [新功能描述]，风格和现有代码保持一致"</td></tr>
+        <tr><td><strong>重构优化</strong></td><td>"检查 [xxx文件] 有没有冗余代码、性能问题、安全隐患，然后帮我改掉"</td></tr>
+      </table>
+
+      <div class="note-box tip" style="margin-top:12px">
+        <span class="icon">💡</span>
+        <div><strong>提问技巧：</strong>好的描述 = 具体功能 + 技术栈 + 界面风格 + 约束条件。比如"帮我做个网站"不如"帮我用 React + Tailwind 做一个移动端适配的个人博客，支持 Markdown 编辑和标签分类"效果好 10 倍。</div>
+      </div>
+    </div>
+
+    <!-- ═══════════ 第六章：快捷键 ═══════════ -->
+    <div class="card">
+      <h3>⌨️ 第六章 · 快捷键速查</h3>
+      <table class="comparison-table">
+        <tr><th>快捷键</th><th>作用</th><th>什么时候用</th></tr>
+        <tr><td><code>Ctrl + Enter</code></td><td>发送消息</td><td>每次输入完需求后</td></tr>
+        <tr><td><code>Ctrl + K</code></td><td>聚焦输入框</td><td>鼠标在其他地方，想快速打字</td></tr>
+        <tr><td><code>Ctrl + C</code></td><td>中断 AI 当前操作</td><td>AI 跑偏了、做错了，立刻停止</td></tr>
+        <tr><td><code>Ctrl + L</code></td><td>清空对话</td><td>等同于 /clear，开启新话题</td></tr>
+        <tr><td><code>↑ / ↓</code></td><td>浏览历史命令</td><td>快速复用之前发过的指令</td></tr>
+        <tr><td><code>Ctrl + /</code></td><td>显示所有快捷键</td><td>忘了快捷键的时候</td></tr>
+      </table>
+
+      <h4 style="font-size:0.9rem;margin:14px 0 6px">常用斜杠命令</h4>
+      <table class="comparison-table">
+        <tr><th>命令</th><th>作用</th></tr>
+        <tr><td><code>/help</code></td><td>查看所有可用命令和帮助</td></tr>
+        <tr><td><code>/clear</code></td><td>清空当前对话，开始新话题（对话太长 AI 变慢时必用）</td></tr>
+        <tr><td><code>/review</code></td><td>让 AI 审查当前项目所有改动，找出 Bug 和隐患</td></tr>
+        <tr><td><code>/init</code></td><td>为当前项目生成 CODEX.md 配置文件</td></tr>
+        <tr><td><code>/model</code></td><td>切换当前使用的模型</td></tr>
+      </table>
+    </div>
+
+    <!-- ═══════════ 第七章：CODEX.md ═══════════ -->
+    <div class="card">
+      <h3>📝 第七章 · CODEX.md 项目配置</h3>
+      <p style="margin-bottom:12px">在项目根目录创建一个 <code>CODEX.md</code> 文件，Codex 每次打开这个项目都会自动读取。它相当于给 AI 提前规定好工作规范：</p>
+      <pre># CODEX.md — 这个项目的 AI 工作规范
+
+## 项目信息
+- 这是一个个人博客项目，React + TypeScript + Tailwind CSS
+- 后端用 Supabase，数据库是 PostgreSQL
+- 部署在 Vercel 上
+
+## 代码规范（AI 必须遵守）
+- 组件用函数式写法，不要用 Class 组件
+- 所有组件 props 必须定义 TypeScript interface
+- 状态管理用 Zustand，不要引入 Redux
+- 错误必须 try-catch 处理，禁止吞异常
+- 不要使用 any 类型
+
+## 禁止事项
+- 不要修改 package.json 中的依赖版本
+- 不要修改 .env 或 .env.local 文件
+- 不要删除任何已有文件，除非我明确要求
+- 不要引入超过 100KB 的新 npm 包
+
+## 我的偏好
+- 用中文回复和注释
+- 写代码之前先解释方案，等我确认再动手
+- 每改完一个文件，自动运行相关测试</pre>
+      <div class="note-box tip">
+        <span class="icon">✅</span>
+        <div>
+          <strong>实战建议：</strong>每一个重要项目都应该有一个 CODEX.md。建好之后，AI 就不会乱写代码风格、乱装依赖——相当于你提前给 AI 上了一道紧箍咒。花 5 分钟写一个，后续省你 100 次纠正 AI 的口水。
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ 第八章：MCP 扩展 ═══════════ -->
+    <div class="card">
+      <h3>🔌 第八章 · MCP 扩展能力</h3>
+      <p style="margin-bottom:12px">MCP（Model Context Protocol）是给 Codex 增加额外能力的扩展接口。桌面版内置了基础能力，进阶用户可以手动添加更多。通俗理解：MCP 就像给 Codex 装插件——装了浏览器插件就能操作浏览器，装了数据库插件就能查数据库。</p>
+
+      <div class="plugin-grid" style="margin-bottom:12px">
+        <div class="plugin-card">
+          <h4>🌐 Playwright MCP</h4>
+          <p>操作浏览器：打开网页、点击、填表单、截图。让 AI 能"看到"你的网页长什么样，前端调试必备。</p>
+          <div class="tag-row"><span class="plugin-tag">必装</span><span class="plugin-tag">MCP</span></div>
+        </div>
+        <div class="plugin-card">
+          <h4>📂 Filesystem MCP</h4>
+          <p>增强文件操作：搜索文件内容、批量重命名、跨目录操作。桌面版内置了基础版本，这个更强大。</p>
+          <div class="tag-row"><span class="plugin-tag">推荐</span><span class="plugin-tag">MCP</span></div>
+        </div>
+        <div class="plugin-card">
+          <h4>🗄️ SQLite MCP</h4>
+          <p>直接操作数据库：建表、查数据、分析统计。后端项目或数据分析场景的神器。</p>
+          <div class="tag-row"><span class="plugin-tag">推荐</span><span class="plugin-tag">MCP</span></div>
+        </div>
+        <div class="plugin-card">
+          <h4>🐙 GitHub MCP</h4>
+          <p>管理 GitHub 仓库：创建 Issue、查看 PR、发布 Release。团队协作效率翻倍。</p>
+          <div class="tag-row"><span class="plugin-tag">可选</span><span class="plugin-tag">MCP</span></div>
+        </div>
+      </div>
+
+      <div class="note-box info">
+        <span class="icon">💡</span>
+        <div><strong>新手建议：</strong>桌面版开箱即用，不需要折腾 MCP。等你用了 1-2 周熟悉基本操作后，再根据需要添加。MCP 配置在设置 → MCP 中添加，格式参考上方配置建议章节。</div>
+      </div>
+    </div>
+
+    <!-- ═══════════ 第九章：进阶实战技巧 ═══════════ -->
+    <div class="card">
+      <h3>⚡ 第九章 · 进阶实战技巧</h3>
+
+      <h4 style="font-size:0.9rem;margin:12px 0 6px">🔁 技巧 1：迭代式开发循环</h4>
+      <p style="color:var(--text2);font-size:0.8rem">最高效的使用方式不是一次性说完所有需求，而是：写一个小功能 → 看看效果 → 提修改 → 再看效果 → 继续加功能。每一轮 2-5 分钟，像捏泥巴一样逐步成型。</p>
+
+      <h4 style="font-size:0.9rem;margin:12px 0 6px">📎 技巧 2：给 AI 看参考</h4>
+      <p style="color:var(--text2);font-size:0.8rem">如果你想让页面看起来像某个网站，截图发给 Codex：</p>
+      <pre>参考这张截图的设计风格，帮我做一个类似的页面</pre>
+
+      <h4 style="font-size:0.9rem;margin:12px 0 6px">🔍 技巧 3：让 AI 自我审查</h4>
+      <p style="color:var(--text2);font-size:0.8rem">AI 写完代码后，让它自己检查一遍：</p>
+      <pre>/review
+检查一下刚才写的代码有没有安全问题、性能问题、可读性问题</pre>
+
+      <h4 style="font-size:0.9rem;margin:12px 0 6px">🗂️ 技巧 4：同时处理多件事</h4>
+      <p style="color:var(--text2);font-size:0.8rem">Codex 可以并行处理多个独立任务：</p>
+      <pre>同时做三件事：
+1. 把 src/utils 里所有函数加上 TypeScript 类型注解
+2. 更新 README，添加安装和使用说明
+3. 给所有按钮加 hover 效果</pre>
+
+      <h4 style="font-size:0.9rem;margin:12px 0 6px">🔄 技巧 5：让 AI 解释代码</h4>
+      <p style="color:var(--text2);font-size:0.8rem">接手别人的代码时，让 AI 帮你读懂：</p>
+      <pre>详细解释这个项目里每个文件夹是干什么的，核心逻辑在哪几个文件里，数据是怎么流动的</pre>
+    </div>
+
+    <!-- ═══════════ 第十章：常见问题 ═══════════ -->
+    <div class="card">
+      <h3>❓ 第十章 · 常见问题排查</h3>
+      <table class="comparison-table">
+        <tr><th>问题</th><th>原因</th><th>解决</th></tr>
+        <tr><td>AI 回答到一半停了</td><td>网络波动或 Token 上限</td><td>输入"继续"让它接着来</td></tr>
+        <tr><td>AI 生成的代码有错</td><td>需求描述不够具体</td><td>把错误信息复制给 AI，它会自己修</td></tr>
+        <tr><td>AI 找不到你的文件</td><td>工作目录没选对</td><td>检查顶部的工作目录路径是不是你的项目文件夹</td></tr>
+        <tr><td>AI 越来越慢</td><td>对话历史太长</td><td>用 /clear 清空上下文，重新开始</td></tr>
+        <tr><td>AI 写出的代码风格不对</td><td>没有配置 CODEX.md</td><td>在项目根目录创建 CODEX.md 规范 AI 行为</td></tr>
+        <tr><td>登录失败</td><td>账号密码错误或订阅过期</td><td>检查 ChatGPT 订阅状态，或在 ai.gs88.shop/login 购买新 Key</td></tr>
+        <tr><td>打开后界面空白</td><td>应用加载异常</td><td>关闭 Codex 重新打开，或重启电脑</td></tr>
+        <tr><td>权限弹窗太频繁</td><td>权限模式设置问题</td><td>设置中把权限模式改为 Auto</td></tr>
+      </table>
+    </div>
+
+    <!-- ═══════════ 第十一章：从零到大神路线 ═══════════ -->
+    <div class="card">
+      <h3>🔺 第十一章 · 从零到大神成长路线</h3>
+      <p style="margin-bottom:16px">以下是你使用 Codex 的能力成长路线，从第一天到彻底掌握：</p>
+
+      <table class="comparison-table">
+        <tr><th style="width:12%">阶段</th><th style="width:18%">大约时间</th><th>你在干什么</th><th>标志性突破</th></tr>
+        <tr>
+          <td><strong>🚶 新手</strong></td>
+          <td>第 1-3 天</td>
+          <td>用自然语言让 AI 写简单的网页和小工具。每次只提一个需求，AI 写完了看看效果再提下一个。</td>
+          <td>成功让 AI 帮你做出第一个能用的网页</td>
+        </tr>
+        <tr>
+          <td><strong>🏃 入门</strong></td>
+          <td>第 1-2 周</td>
+          <td>开始用 AI 操作现有项目：修 Bug、改功能、读陌生代码。学会了 /review 和 /clear。</td>
+          <td>用 AI 修好了第一个自己找不到原因的 Bug</td>
+        </tr>
+        <tr>
+          <td><strong>🚴 熟练</strong></td>
+          <td>第 3-4 周</td>
+          <td>创建了 CODEX.md 规范 AI 行为。一个项目持续用 AI 迭代开发，从零做到完整上线。</td>
+          <td>在 Codex 协助下完成了一个完整可部署的项目</td>
+        </tr>
+        <tr>
+          <td><strong>🚗 进阶</strong></td>
+          <td>第 2-3 月</td>
+          <td>配置 MCP 扩展能力。同时让 AI 处理多个任务。能用 AI 做代码审查、性能优化、安全审计。</td>
+          <td>AI 成为日常工作中不可替代的工具</td>
+        </tr>
+        <tr>
+          <td><strong>✈️ 大神</strong></td>
+          <td>第 6 月+</td>
+          <td>深谙如何拆解需求让 AI 最高效地执行。能驾驭复杂项目，一个人 + Codex 产出相当于一个小团队。</td>
+          <td>你告诉别人"这个项目是我和 AI 一起做的"，别人不信</td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════ 配置建议 ═══════════ -->
+<section id="config">
+  <div class="section-inner">
+    <div class="section-title">⚙️ 基础配置建议</div>
+    <div class="section-sub">安装完成后，推荐做以下设置让 Codex 更好用</div>
+
+    <div class="card">
+      <h3>🔧 应用内设置</h3>
+      <p style="margin-bottom:12px">打开 Codex 桌面应用，点击左下角齿轮图标 ⚙️ 进入设置：</p>
+      <table class="comparison-table">
+        <tr><th>设置项</th><th>推荐值</th><th>说明</th></tr>
+        <tr><td>默认模型</td><td>GPT-5 或自动</td><td>最新模型效果最好</td></tr>
+        <tr><td>权限模式</td><td>Auto（自动）</td><td>项目内自由操作，外部需确认</td></tr>
+        <tr><td>自动保存</td><td>开启</td><td>每次改动自动保存</td></tr>
+        <tr><td>语言</td><td>中文</td><td>界面和回复都用中文</td></tr>
+      </table>
+      <div class="note-box tip">
+        <span class="icon">✅</span>
+        <div>
+          <strong>权限模式说明：</strong><br>
+          · <strong>Auto</strong>（推荐）：项目目录内自由操作，目录外需确认<br>
+          · <strong>Read-only</strong>：只能读代码和回答问题，不能改文件<br>
+          · <strong>Full Access</strong>：完全自主，包括网络访问
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📋 MCP 扩展（可选）</h3>
+      <p style="margin-bottom:12px">桌面版 Codex 内置了常用能力。如需额外扩展（浏览器操作、数据库等），可在设置 → MCP 中添加：</p>
+      <pre># 浏览器自动化
+[mcp.servers.playwright]
+command = "npx"
+args = ["@playwright/mcp", "--browser", "chrome"]
+
+# 文件系统增强
+[mcp.servers.filesystem]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-filesystem", "/Users/你的用户名"]</pre>
+      <div class="note-box info">
+        <span class="icon">💡</span>
+        <div>普通用户不需要手动配置 MCP，桌面版开箱即用。进阶用户可按需添加。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 插件推荐 ═══════════ -->
+<section id="plugins" style="background:var(--card2)">
+  <div class="section-inner">
+    <div class="section-title">🔌 插件 & Skills 推荐</div>
+    <div class="section-sub">插件扩展能力，Skills 封装工作流，搭配使用效率翻倍</div>
+
+    <!-- ── 插件 ── -->
+    <h3 style="font-size:1rem;margin-bottom:12px;color:var(--accent)">🧩 内置插件（设置中一键启用）</h3>
+
+    <div class="plugin-grid">
+      <div class="plugin-card">
+        <h4>🌐 Chrome</h4>
+        <p>浏览器自动化。让 Codex 打开网页、点击按钮、填表单、截图预览，前端开发调试的核心工具。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">必装</span>
+          <span class="plugin-tag">内置</span>
+        </div>
+      </div>
+
+      <div class="plugin-card">
+        <h4>🐙 GitHub</h4>
+        <p>连接 GitHub 仓库，管理 Issue、PR、Release、Actions，自动化开发工作流。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">必装</span>
+          <span class="plugin-tag">内置</span>
+        </div>
+      </div>
+
+      <div class="plugin-card">
+        <h4>🖥️ Computer Use</h4>
+        <p>让 AI 像人一样操作你的电脑：移动鼠标、点击、打字、打开应用。自动化任何桌面操作。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">推荐</span>
+          <span class="plugin-tag">内置</span>
+        </div>
+      </div>
+
+      <div class="plugin-card">
+        <h4>🏗️ Build Web Apps</h4>
+        <p>一键生成完整的 Web 应用。从项目脚手架到部署上线，全流程自动化构建。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">推荐</span>
+          <span class="plugin-tag">内置</span>
+        </div>
+      </div>
+
+      <div class="plugin-card">
+        <h4>🎨 Figma</h4>
+        <p>直接读取 Figma 设计稿，将设计自动转换成前端代码。设计师和开发者的桥梁。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">推荐</span>
+          <span class="plugin-tag">内置</span>
+        </div>
+      </div>
+
+      <div class="plugin-card">
+        <h4>📄 Documents</h4>
+        <p>创建和编辑 Word、PDF 等文档。自动生成项目文档、API 说明、用户手册。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">办公必备</span>
+          <span class="plugin-tag">内置</span>
+        </div>
+      </div>
+
+      <div class="plugin-card">
+        <h4>📊 Presentations</h4>
+        <p>自动生成 PPT 演示文稿。把你的想法、数据、项目介绍一键变成精美的幻灯片。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">办公必备</span>
+          <span class="plugin-tag">内置</span>
+        </div>
+      </div>
+
+      <div class="plugin-card">
+        <h4>📈 Spreadsheets</h4>
+        <p>创建和操作电子表格。数据分析、报表生成、CSV/Excel 自动化处理。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">办公必备</span>
+          <span class="plugin-tag">内置</span>
+        </div>
+      </div>
+
+      <div class="plugin-card">
+        <h4>🖼️ HyperFrames</h4>
+        <p>快速生成高质量的网页截图和预览图。做作品集、项目展示、社交媒体封面。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">创意工具</span>
+          <span class="plugin-tag">内置</span>
+        </div>
+      </div>
+
+      <div class="plugin-card">
+        <h4>🎬 Remotion</h4>
+        <p>用 React 代码创建视频。自动生成产品演示视频、教程动画、数据可视化动效。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">创意工具</span>
+          <span class="plugin-tag">内置</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-box tip" style="margin-top:16px">
+      <span class="icon">💡</span>
+      <div>
+        <strong>以上插件均为 Codex 桌面版内置：</strong><br>
+        不需要额外安装，在 Codex 设置中点击启用即可。每个插件对应一种专业能力，按需开启，全部免费使用。
+      </div>
+    </div>
+
+    <!-- ── Skills ── -->
+    <h3 style="font-size:1rem;margin:32px 0 12px;color:var(--purple)">🎯 社区精选 Skills（工作流自动化）</h3>
+    <p style="color:var(--text2);font-size:0.82rem;margin-bottom:16px">Skills 是预置的自动化工作流，在 Codex 对话中通过 <code>$skill-name</code> 调用。安装方式：<code>npx skills add 作者/技能名</code></p>
+
+    <div class="plugin-grid">
+      <div class="plugin-card">
+        <h4>📋 Create Plan</h4>
+        <p>强制 Codex 先制定执行计划再写代码。避免 AI 盲目开工，大幅减少返工。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">必装</span>
+          <span class="plugin-tag">openai/skills</span>
+        </div>
+      </div>
+
+      <div class="plugin-card">
+        <h4>🔍 Code Review & Quality</h4>
+        <p>五维度代码审查：正确性、安全性、性能、可维护性、一致性。比内置 /review 更专业。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">必装</span>
+          <span class="plugin-tag">addyosmani/agent-skills</span>
+        </div>
+      </div>
+
+      <div class="plugin-card">
+        <h4>🧪 WebApp Testing</h4>
+        <p>Playwright 驱动浏览器自动化测试。自动生成测试用例，覆盖你的页面交互逻辑。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">推荐</span>
+          <span class="plugin-tag">anthropics/skills</span>
+        </div>
+      </div>
+
+      <div class="plugin-card">
+        <h4>🔐 Security & Hardening</h4>
+        <p>OWASP Top 10 安全审查 + 三层边界加固。上线前必跑一次。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">推荐</span>
+          <span class="plugin-tag">addyosmani/agent-skills</span>
+        </div>
+      </div>
+
+      <div class="plugin-card">
+        <h4>⚡ Superpowers</h4>
+        <p>完整工程工作流：需求澄清 → 方案审批 → TDD 实现 → 并行子代理 → 验证。一站式开发。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">进阶</span>
+          <span class="plugin-tag">obra/superpowers</span>
+        </div>
+      </div>
+
+      <div class="plugin-card">
+        <h4>🔄 Verification Loop</h4>
+        <p>提交前自动检查：构建 → 类型检查 → Lint → 测试 → 安全 → Diff 审查，全部通过才放行。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">进阶</span>
+          <span class="plugin-tag">affaan-m/skills</span>
+        </div>
+      </div>
+
+      <div class="plugin-card">
+        <h4>🎨 Frontend Skill</h4>
+        <p>编码设计标准让 AI 生成更精美的前端界面，搭配 Figma 插件使用效果最佳。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">前端推</span>
+          <span class="plugin-tag">openai/skills</span>
+        </div>
+      </div>
+
+      <div class="plugin-card">
+        <h4>🐙 GH Fix CI</h4>
+        <p>自动读取 GitHub Actions 失败日志，定位根因并给出修复建议。秒级排查 CI 故障。</p>
+        <div class="tag-row">
+          <span class="plugin-tag">团队推</span>
+          <span class="plugin-tag">ComposioHQ/skills</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-box info" style="margin-top:16px">
+      <span class="icon">💡</span>
+      <div>
+        <strong>安装示例：</strong><br>
+        在 Codex 中直接输入：<code>npx skills add openai/skills --skill create-plan</code><br>
+        安装后通过 <code>$create-plan</code> 即可调用。Skills 存在 <code>~/.agents/skills/</code> 目录下。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 大神配置 ═══════════ -->
+<section id="expert">
+  <div class="section-inner">
+    <div class="section-title">🧙 个性化「大神配置」</div>
+    <div class="section-sub">经过长期调优的生产级配置，开箱即用</div>
+
+    <div class="card">
+      <h3>📝 CODEX.md — 项目级 AI 指令</h3>
+      <p style="margin-bottom:12px">在项目根目录创建 <code>CODEX.md</code>，Codex 会自动读取并遵守其中的规范。以下是一个经过实战打磨的模板：</p>
+      <pre># 项目编码规范
+
+## 技术栈
+- 前端：React 18 + TypeScript + Tailwind CSS
+- 后端：Python FastAPI + PostgreSQL
+
+## 代码规范
+- 组件用函数式 + Hooks
+- 所有函数必须有类型注解
+- 错误必须显式处理
+- 文件命名：组件 PascalCase，工具 camelCase
+
+## 禁止
+- 不要生成包含 API 密钥的代码
+- 不要在没有确认的情况下删除文件</pre>
+    </div>
+
+    <div class="card">
+      <h3>📋 Codex 配置文件</h3>
+      <p style="margin-bottom:12px">Codex 使用 <code>~/.codex/config.toml</code>（TOML 格式），而不是 JSON：</p>
+      <pre># Codex 配置文件 ~/.codex/config.toml
+
+[model]
+default = "gpt-5"           # 默认模型
+
+[permissions]
+mode = "auto"               # auto | read-only | full-access
+
+[approval]
+enabled = true              # 敏感操作需要确认
+
+[mcp]
+# MCP 服务器配置（见下方插件推荐）
+
+[env]
+OPENAI_API_KEY = "sk-你的密钥"</pre>
+      <div class="note-box tip">
+        <span class="icon">✅</span>
+        <div>
+          <strong>三种权限模式：</strong><br>
+          · <strong>Auto</strong>（推荐）：项目目录内自由操作，目录外需确认<br>
+          · <strong>Read-only</strong>：只能读代码和回答问题，不能改文件<br>
+          · <strong>Full Access</strong>：完全自主，包括网络访问
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📋 MCP 服务器配置</h3>
+      <p style="margin-bottom:12px">Codex 同样支持 MCP 扩展。在 <code>~/.codex/config.toml</code> 中添加：</p>
+      <pre>[mcp.servers.playwright]
+command = "npx"
+args = ["@playwright/mcp", "--browser", "chrome"]
+
+[mcp.servers.filesystem]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-filesystem", "/Users/你的用户名"]</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ API 供应商 ═══════════ -->
+<section id="api" style="background:var(--card2)">
+  <div class="section-inner">
+    <div class="section-title">🔑 API 密钥供应商推荐</div>
+    <div class="section-sub">经过实测的稳定渠道，性价比从高到低排列</div>
+
+    <div class="card">
+      <h3>📊 供应商对比</h3>
+      <table class="comparison-table">
+        <thead>
+          <tr><th>供应商</th><th>模型</th><th>计费方式</th><th>推荐场景</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>JiaPI（佳派）⭐ 作者推荐</strong></td>
+            <td>ChatGPT 5.5</td>
+            <td>按量计费，价格实惠</td>
+            <td>性价比首选，国内直连稳定</td>
+          </tr>
+          <tr>
+            <td><strong>Link API ⭐ 作者推荐</strong></td>
+            <td>ChatGPT 5.5</td>
+            <td>按量计费 + 订阅套餐双模式</td>
+            <td>灵活选择，轻度/重度用户都适合</td>
+          </tr>
+          <tr>
+            <td><strong>ChatGPT 订阅</strong></td>
+            <td>Codex 内置模型</td>
+            <td>Plus $20/月 含 Codex</td>
+            <td>最省心，无需折腾 API Key</td>
+          </tr>
+          <tr>
+            <td><strong>OpenAI 官方 API</strong></td>
+            <td>GPT-5 / GPT-4o</td>
+            <td>按量计费，$2.5-15/M token</td>
+            <td>官方渠道，效果最佳</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note-box info" style="margin-top:12px">
+        <span class="icon">🔑</span>
+        <div>
+          <strong>注册 / 购买链接（复制到浏览器打开）：</strong><br>
+          · <strong>JiaPI（佳派）⭐ 作者推荐：</strong><a href="https://console.jiapi.com/login" style="color:var(--blue)" target="_blank">console.jiapi.com/login</a> — 按量计费，价格不错，购买链接：<a href="https://e.tb.cn/h.RmH7tHmkDxgpn3v?tk=b5mxg3u05Oc" style="color:var(--blue)" target="_blank">淘宝下单</a><br>
+          · <strong>Link API ⭐ 作者推荐：</strong><a href="https://ai.gs88.shop/home" style="color:var(--blue)" target="_blank">ai.gs88.shop/home</a> — 按量计费 + 订阅套餐两种方式，注册后直接购买<br>
+          · ChatGPT 订阅：chatgpt.com → 升级 Plus<br>
+          <br>
+          <strong>选择建议：</strong>新手推荐 JiaPI 或 Link API，按量计费不怕浪费，国内直连不用魔法。重度用户选订阅套餐更划算。
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>💸 Token 用量估算</h3>
+      <table class="comparison-table">
+        <tr><th>使用强度</th><th>日消耗</th><th>月消耗</th><th>方案建议</th></tr>
+        <tr><td>轻度（偶尔问问题）</td><td>~5 万</td><td>~150 万</td><td>ChatGPT Plus 够用</td></tr>
+        <tr><td>中度（日常写代码）</td><td>~50 万</td><td>~1500 万</td><td>ChatGPT Plus 或 API $5/月</td></tr>
+        <tr><td>重度（全天写代码+Agent）</td><td>~500 万</td><td>~1.5 亿</td><td>API 按量 ≈ $30/月</td></tr>
+        <tr><td>极限（多 Agent 并行）</td><td>~2000 万</td><td>~6 亿</td><td>API 按量 ≈ $120/月</td></tr>
+      </table>
+      <p style="font-size:0.75rem;color:var(--text2);margin-top:8px">
+        * 尊享版赠送的一天 API Key GPT-5.5 满血版（$100 额度，约 3800 万 Token）≈ 重度使用 7 天或中度使用 25 天的量，非常充裕
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 联系方式 ═══════════ -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="section-title">📞 联系我 · 远程安装</div>
+    <div class="section-sub">购买了尊享版的用户，请通过以下方式联系我</div>
+
+    <div class="note-box warn">
+      <span class="icon">⚠️</span>
+      <div>
+        <strong>联系前请确认：</strong><br>
+        ① 已安装 <strong>ToDesk</strong>（todesk.com 下载免费版）<br>
+        ② 打开 ToDesk，记下你的 <strong>设备代码</strong> 和 <strong>临时密码</strong><br>
+        ③ 加我时备注 <strong>"Codex远程安装 + 你的闲鱼昵称"</strong>
+      </div>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-card">
+        <h4>💚 微信</h4>
+        <div class="qr-box">
+          <img src="codex-images/wechat-qr.jpg"
+               alt="微信二维码">
+        </div>
+        <p class="contact-info">微信号：<strong>13280571074</strong></p>
+      </div>
+
+      <div class="contact-card">
+        <h4>🐧 QQ</h4>
+        <div class="qr-box">
+          <img src="codex-images/qq-qr.jpg"
+               alt="QQ二维码">
+        </div>
+        <p class="contact-info">QQ号：<strong>1207193488</strong></p>
+      </div>
+
+      <div class="contact-card">
+        <h4>👥 QQ 答疑群</h4>
+        <div class="qr-box">
+          <img src="codex-images/qqgroup-qr.jpg"
+               alt="QQ群二维码">
+        </div>
+        <p class="contact-info">群号：<strong>884957636</strong></p>
+      </div>
+
+      <div class="contact-card">
+        <h4>🖥️ ToDesk 信息</h4>
+        <div style="font-size:0.85rem;color:var(--text2);text-align:left;line-height:1.8">
+          <p>1. 去 <strong>todesk.com</strong> 下载</p>
+          <p>2. 安装后打开 → 记录：</p>
+          <p style="padding-left:16px">📱 <strong>设备代码</strong>：XXX XXX XXX</p>
+          <p style="padding-left:16px">🔑 <strong>临时密码</strong>：XXXXXX</p>
+          <p>3. 将以上信息发给我</p>
+          <p>4. 约定时间我远程操作</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-box info" style="margin-top:16px">
+      <span class="icon">⏰</span>
+      <div>
+        <strong>远程安装流程：</strong><br>
+        加好友 → 发送 ToDesk 信息 → 约定时间 → 我远程连接 → 15-30 分钟完成 → 你验收确认<br>
+        <strong>通常当天可完成，晚上和周末都有空。</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 对比总结 ═══════════ -->
+<section>
+  <div class="section-inner">
+    <div class="section-title">📊 两种方案对比总结</div>
+    <div class="section-sub">一表看懂差异，按需选择</div>
+
+    <div class="card" style="overflow-x:auto">
+      <table class="comparison-table">
+        <tr><th>项目</th><th>📖 标准版</th><th>🛠️ 尊享版</th></tr>
+        <tr><td>安装图文教程</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>基础配置指南</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>插件 & Skills 推荐</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>大神配置模板</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>API 供应商推荐</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>后续更新</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>远程代装</td><td class="no">✗</td><td class="yes">✓ 15-30分钟搞定</td></tr>
+        <tr><td>附赠 API Key</td><td class="no">✗</td><td class="yes">✓ 一天 GPT-5.5 满血，$100额度（≈3800万Token）</td></tr>
+        <tr><td>30天不定时解答</td><td class="no">✗ 自助</td><td class="yes">✓ 安装+使用问题免费解答</td></tr>
+        <tr><td>Token 使用指南</td><td class="no">✗</td><td class="yes">✓ 最大化利用额度</td></tr>
+        <tr><td>独家更新推送</td><td class="no">✗</td><td class="yes">✓ 新资源优先获取</td></tr>
+        <tr><td>适合人群</td><td>熟悉命令行、爱折腾</td><td>想省时间、一次到位</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <p>© 2026 Codex Installation Guide · 仅供已购买用户使用 · 请勿外传</p>
+  <p style="margin-top:4px">本页面会持续更新，请保存链接以便获取最新版本</p>
+</footer>
+
+</body>
+</html>
