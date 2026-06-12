@@ -41,6 +41,7 @@ nav {
   max-width: 1100px; margin: 0 auto;
   display: flex; align-items: center; gap: 20px;
   height: 52px; overflow-x: auto;
+  position: relative;
 }
 .nav-inner a {
   font-size: 0.78rem; color: var(--text2); text-decoration: none;
@@ -223,12 +224,94 @@ footer {
   font-size: 0.75rem;
 }
 
+/* ═══════ HAMBURGER ═══════ */
+.hamburger {
+  display: none;
+  background: none; border: 1px solid var(--border);
+  color: var(--text); font-size: 1.4rem; cursor: pointer;
+  padding: 6px 12px; border-radius: 6px; line-height: 1;
+  font-family: inherit;
+}
+.nav-links { display: flex; gap: 6px; align-items: center; }
+.nav-links a { font-size: 0.76rem; color: var(--text2); text-decoration: none; white-space: nowrap; }
+
 /* ═══════ RESPONSIVE ═══════ */
-@media (max-width: 640px) {
-  .hero h1 { font-size: 1.6rem; }
-  .pricing-grid { grid-template-columns: 1fr; }
-  .section-title { font-size: 1.2rem; }
-  .step { gap: 10px; }
+@media (max-width: 768px) {
+  /* Nav */
+  .hamburger { display: block; }
+  .nav-links {
+    display: none; position: absolute; top: 52px; left: 0; right: 0;
+    background: rgba(10,10,15,0.98); flex-direction: column;
+    padding: 12px 20px; border-bottom: 1px solid var(--border);
+    gap: 4px; z-index: 99;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a { padding: 10px 0; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
+  .nav-links a:last-child { border-bottom: none; }
+
+  /* Hero */
+  .hero { padding: 36px 16px 32px; }
+  .hero h1 { font-size: 1.5rem; }
+  .hero .badge-row { gap: 6px; }
+  .hero .badge { font-size: 0.7rem; padding: 4px 10px; }
+  .btn-row { flex-direction: column; align-items: center; }
+  .btn { width: 100%; max-width: 320px; justify-content: center; font-size: 0.85rem; padding: 12px 20px; }
+
+  /* Sections */
+  section { padding: 32px 12px; }
+  .section-title { font-size: 1.15rem; }
+  .section-sub { font-size: 0.8rem; margin-bottom: 18px; }
+
+  /* Cards & grid */
+  .pricing-grid, .grid-2, .grid-3, .grid-2-1, .plugin-grid { grid-template-columns: 1fr; }
+  .pricing-card { padding: 20px 16px; }
+  .pricing-card .price { font-size: 1.5rem; }
+
+  /* Tables - horizontal scroll */
+  .comparison-table {
+    display: block; overflow-x: auto; white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  .comparison-table th, .comparison-table td { font-size: 0.72rem; padding: 6px 8px; }
+
+  /* Steps */
+  .step { gap: 8px; }
+  .step-num { width: 28px; height: 28px; font-size: 0.75rem; }
+  .step-body h4 { font-size: 0.85rem; }
+  .step-body p { font-size: 0.78rem; }
+  pre { font-size: 0.7rem; padding: 8px 10px; overflow-x: auto; }
+
+  /* Contact */
+  .contact-grid { grid-template-columns: 1fr; }
+  .contact-card { padding: 16px; }
+
+  /* Cards */
+  .card { padding: 16px; }
+  .card h3 { font-size: 0.9rem; }
+  .plugin-card { padding: 14px; }
+  .plugin-card h4 { font-size: 0.82rem; }
+  .plugin-card p { font-size: 0.74rem; }
+
+  /* Note boxes */
+  .note-box { padding: 12px 14px; font-size: 0.76rem; }
+
+  /* Footer */
+  footer { font-size: 0.7rem; padding: 20px; }
+
+  /* Images in steps */
+  .step-body img { max-width: 100%; height: auto; }
+
+  /* Badges & tags */
+  .plugin-tag { font-size: 0.62rem; }
+}
+
+/* Small phones */
+@media (max-width: 400px) {
+  .hero h1 { font-size: 1.25rem; }
+  .section-title { font-size: 1rem; }
+  .token-highlight { font-size: 0.72rem; }
+  .token-highlight strong { font-size: 0.9rem; }
+  .qr-box { width: 130px; height: 130px; }
 }
 </style>
 </head>
@@ -238,14 +321,17 @@ footer {
 <nav>
   <div class="nav-inner">
     <a href="#hero" class="nav-logo">⚡ Codex Guide</a>
-    <a href="#compare">套餐对比</a>
-    <a href="#install">安装教程</a>
-    <a href="#usage">使用指南</a>
-    <a href="#config">配置建议</a>
-    <a href="#plugins">插件推荐</a>
-    <a href="#expert">大神配置</a>
-    <a href="#api">API 供应商</a>
-    <a href="#contact">联系我</a>
+    <span class="nav-links">
+      <a href="#compare">套餐对比</a>
+      <a href="#install">安装教程</a>
+      <a href="#usage">使用指南</a>
+      <a href="#config">配置建议</a>
+      <a href="#plugins">插件推荐</a>
+      <a href="#expert">大神配置</a>
+      <a href="#api">API 供应商</a>
+      <a href="#contact">联系我</a>
+    </span>
+    <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
   </div>
 </nav>
 
